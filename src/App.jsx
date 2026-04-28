@@ -150,6 +150,8 @@ const DeviationBar = ({ pct }) => {
   const clamped = Math.max(-60, Math.min(60, pct));
   const pos = 50 + clamped * 0.7;
   const color = clamped < -8 ? "#4ADE80" : clamped > 8 ? "#F87171" : "#FACC15";
+  const barWidth = pos + "%";
+  const barBg = "linear-gradient(90deg, #4ADE80 0%, " + color + " 100%)";
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
@@ -160,7 +162,7 @@ const DeviationBar = ({ pct }) => {
       </div>
       <div style={{ position: "relative", height: 6, background: "#1A1A1A", borderRadius: 3, overflow: "hidden" }}>
         <div style={{ position: "absolute", left: "50%", top: 0, width: 1, height: "100%", background: "#333" }} />
-        <div style={{ position: "absolute", left: 0, top: 0, width: ${pos}%, height: "100%", background: linear-gradient(90deg, #4ADE80 0%, ${color} 100%), borderRadius: 3, transition: "width 1.2s cubic-bezier(.4,0,.2,1)" }} />
+        <div style={{ position: "absolute", left: 0, top: 0, width: barWidth, height: "100%", background: barBg, borderRadius: 3, transition: "width 1.2s cubic-bezier(.4,0,.2,1)" }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5 }}>
         <span style={{ fontSize: 9, color: "#444", letterSpacing: 1 }}>ДЕШЕВЛЕ</span>
@@ -191,9 +193,9 @@ export default function App() {
   const LOAD_MSGS = [
     "Определяю район и локацию...",
     "Анализирую цену за кв.м...",
-    "Сравниваю с рынком...",
+"Сравниваю с рынком...",
     "Считаю доходность...",
-"Формирую рекомендацию...",
+    "Формирую рекомендацию...",
   ];
 
   const analyze = async () => {
@@ -256,7 +258,7 @@ export default function App() {
           <div style={{ flex: 1 }}>
             <div style={S.logoWord}>
               {"IMKON".split("").map((c, i) => (
-                <span key={i} style={{ ...S.logoLetter, animationDelay: ${i * 0.08}s }}>{c}</span>
+                <span key={i} style={{ ...S.logoLetter, animationDelay: (i * 0.08) + "s" }}>{c}</span>
               ))}
               <span style={S.logoDot}>.</span>
             </div>
@@ -307,8 +309,7 @@ export default function App() {
                 <div style={S.exBtnDot} />
                 <div>
                   <div style={S.exBtnLabel}>{ex.label}</div>
-                  <div style={S.exBtnPreview}>{ex.text.slice(0, 60)}...
-</div>
+<div style={S.exBtnPreview}>{ex.text.slice(0, 60)}...</div>
                 </div>
               </button>
             ))}
@@ -322,7 +323,7 @@ export default function App() {
           <div style={S.loadingOrb} className="pulse-orb" />
           <div style={S.loadingText}>{loadMsg}</div>
           <div style={S.loadingDots}>
-            {[0,1,2].map(i => <div key={i} style={{ ...S.dot, animationDelay: ${i*0.25}s }} />)}
+            {[0,1,2].map(i => <div key={i} style={{ ...S.dot, animationDelay: (i*0.25) + "s" }} />)}
           </div>
           <div style={S.loadingCaption}>Анализирую параметры объявления</div>
         </div>
@@ -333,7 +334,7 @@ export default function App() {
         <div style={S.body} className="fadein">
 
           {/* Verdict hero */}
-          <div style={{ ...S.verdictCard, background: vc.bg, borderColor: ${vc.color}22 }}>
+          <div style={{ ...S.verdictCard, background: vc.bg, borderColor: vc.color + "22" }}>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 10, color: "#555", letterSpacing: 2, marginBottom: 6 }}>ВЕРДИКТ</div>
               <div style={{ fontSize: 28, fontWeight: 900, color: vc.color, fontFamily: "'Cormorant Garamond', serif", letterSpacing: 2, lineHeight: 1 }}>
