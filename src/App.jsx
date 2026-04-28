@@ -128,12 +128,14 @@ const ScoreRing = ({ score }) => {
   const r = 28, circ = 2 * Math.PI * r;
   const fill = (score / 10) * circ;
   const color = score >= 7 ? "#4ADE80" : score >= 5 ? "#FACC15" : "#F87171";
+  const shadow = "drop-shadow(0 0 6px " + color + "88)";
+  const dasharray = fill + " " + circ;
   return (
     <svg width="72" height="72" style={{ transform: "rotate(-90deg)" }}>
       <circle cx="36" cy="36" r={r} fill="none" stroke="#1E1E1E" strokeWidth="5" />
       <circle cx="36" cy="36" r={r} fill="none" stroke={color} strokeWidth="5"
-        strokeDasharray={`${fill} ${circ}`} strokeLinecap="round"
-        style={{ transition: "stroke-dasharray 1s ease", filter: drop-shadow(0 0 6px ${color}88) }} />
+        strokeDasharray={dasharray} strokeLinecap="round"
+        style={{ transition: "stroke-dasharray 1s ease", filter: shadow }} />
       <text x="36" y="36" textAnchor="middle" dominantBaseline="central"
         style={{ transform: "rotate(90deg) translate(0, -72px)", transformOrigin: "36px 36px", fill: color, fontSize: 20, fontWeight: 900, fontFamily: "serif" }}>
         {score}
@@ -191,11 +193,11 @@ export default function App() {
     "Анализирую цену за кв.м...",
     "Сравниваю с рынком...",
     "Считаю доходность...",
-    "Формирую рекомендацию...",
+"Формирую рекомендацию...",
   ];
 
   const analyze = async () => {
-if (!text.trim()) return;
+    if (!text.trim()) return;
     setError("");
     setScreen("loading");
     setLoadMsg(LOAD_MSGS[0]);
@@ -207,7 +209,7 @@ if (!text.trim()) return;
     }, 1800);
 
     try {
-      const res = await fetch("/api/analyze, {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -305,11 +307,12 @@ if (!text.trim()) return;
                 <div style={S.exBtnDot} />
                 <div>
                   <div style={S.exBtnLabel}>{ex.label}</div>
-                  <div style={S.exBtnPreview}>{ex.text.slice(0, 60)}...</div>
+                  <div style={S.exBtnPreview}>{ex.text.slice(0, 60)}...
+</div>
                 </div>
               </button>
             ))}
-</div>
+          </div>
         </div>
       )}
 
@@ -403,10 +406,10 @@ if (!text.trim()) return;
               <div style={S.cardLabel}>КЛЮЧЕВЫЕ ФАКТОРЫ</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {result.key_factors.map((f, i) => (
-                  <span key={i} style={{ background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#AAA", fontSize: 12, padding: "5px 10px", borderRadius: 20 }}>{f}</span>
+<span key={i} style={{ background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#AAA", fontSize: 12, padding: "5px 10px", borderRadius: 20 }}>{f}</span>
                 ))}
               </div>
-</div>
+            </div>
           )}
 
           {/* Pros / Cons */}
@@ -467,10 +470,9 @@ const S = {
   headerBadge: { background: "#F9731615", border: "1px solid #F9731640", color: "#F97316", fontSize: 10, fontWeight: 700, padding: "4px 10px", borderRadius: 6, letterSpacing: 2 },
   headerLine: { height: 1, background: "linear-gradient(90deg, transparent, #1E1E1E 20%, #1E1E1E 80%, transparent)", marginBottom: 0 },
   body: { flex: 1, padding: "20px 18px 40px", overflowY: "auto" },
-
-  heroSection: { marginBottom: 24 },
+heroSection: { marginBottom: 24 },
   heroTag: { fontSize: 9, color: "#F97316", letterSpacing: 3, marginBottom: 12, fontWeight: 700 },
-heroTitle: { fontSize: 34, fontWeight: 900, color: "#F0F0F0", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.1, marginBottom: 10 },
+  heroTitle: { fontSize: 34, fontWeight: 900, color: "#F0F0F0", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.1, marginBottom: 10 },
   heroSub: { fontSize: 13, color: "#555", lineHeight: 1.6 },
 
   textarea: { width: "100%", minHeight: 148, background: "#0F0F0F", border: "1px solid #1C1C1C", borderRadius: 16, padding: "14px 16px", color: "#D0D0D0", fontSize: 13, fontFamily: "'Instrument Sans', sans-serif", resize: "vertical", outline: "none", lineHeight: 1.65, marginBottom: 14, boxSizing: "border-box" },
@@ -513,8 +515,8 @@ const CSS = `
   body { background: #080808; }
 
   @keyframes fadein { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes letterIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
-@keyframes dotPulse { 0%,100% { opacity:.2; transform:scale(.7); } 50% { opacity:1; transform:scale(1); } }
+@keyframes letterIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes dotPulse { 0%,100% { opacity:.2; transform:scale(.7); } 50% { opacity:1; transform:scale(1); } }
   @keyframes orbPulse { 0%,100% { transform:scale(1); opacity:.9; } 50% { transform:scale(1.15); opacity:1; } }
 
   .fadein { animation: fadein 0.35s ease; }
@@ -530,3 +532,4 @@ const CSS = `
 
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-thumb { background: #1E1E1E; border-radius: 2px; }
+`;
