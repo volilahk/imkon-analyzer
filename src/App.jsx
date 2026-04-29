@@ -173,13 +173,17 @@ const DeviationBar = ({ pct }) => {
 };
 
 // ─── STAT TILE ─────────────────────────────────────────────────────────────────
-const Tile = ({ label, value, accent, sub }) => (
-  <div style={{ background: "#111", border: "1px solid #1C1C1C", borderRadius: 14, padding: "14px 16px", flex: 1 }}>
-    <div style={{ fontSize: 9, color: "#444", letterSpacing: 2, marginBottom: 6, textTransform: "uppercase" }}>{label}</div>
-    <div style={{ fontSize: 18, fontWeight: 900, color: accent  "#E8E8E8", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>{value  "—"}</div>
-    {sub && <div style={{ fontSize: 10, color: "#444", marginTop: 4 }}>{sub}</div>}
-  </div>
-);
+const Tile = ({ label, value, accent, sub }) => {
+  const tileColor = accent ? accent : "#E8E8E8";
+  const tileValue = value ? value : "—";
+  return (
+    <div style={{ background: "#111", border: "1px solid #1C1C1C", borderRadius: 14, padding: "14px 16px", flex: 1 }}>
+      <div style={{ fontSize: 9, color: "#444", letterSpacing: 2, marginBottom: 6, textTransform: "uppercase" }}>{label}</div>
+      <div style={{ fontSize: 18, fontWeight: 900, color: tileColor, fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>{tileValue}</div>
+      {sub && <div style={{ fontSize: 10, color: "#444", marginTop: 4 }}>{sub}</div>}
+    </div>
+  );
+};
 
 // ─── MAIN ──────────────────────────────────────────────────────────────────────
 export default function App() {
@@ -188,12 +192,12 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState("");
   const [loadMsg, setLoadMsg] = useState("");
-  const loadRef = useRef(null);
+const loadRef = useRef(null);
 
   const LOAD_MSGS = [
     "Определяю район и локацию...",
     "Анализирую цену за кв.м...",
-"Сравниваю с рынком...",
+    "Сравниваю с рынком...",
     "Считаю доходность...",
     "Формирую рекомендацию...",
   ];
@@ -222,8 +226,9 @@ export default function App() {
         }),
       });
       const data = await res.json();
-      const raw = data.content?.find(b => b.type === "text")?.text || "";
-      const clean = raw.replace(/```json|```/g, "").trim();
+      const rawArr = data.content ? data.content.filter(b => b.type === "text") : [];
+      const raw = rawArr.length > 0 ? rawArr[0].text : "";
+      const clean = raw.replace(/[\u0060]{3}json|[\u0060]{3}/g, "").trim();
       const parsed = JSON.parse(clean);
       setResult(parsed);
       setScreen("result");
@@ -243,7 +248,8 @@ export default function App() {
     "НОРМА":       { color: "#FACC15", bg: "#1A1600", icon: "◈" },
     "ПЕРЕОЦЕНЕНО": { color: "#F87171", bg: "#1F0A0A", icon: "▲" },
   };
-  const vc = result ? (verdictCfg[result.verdict] || verdictCfg["НОРМА"]) : {};
+  const vcKey = result && verdictCfg[result.verdict] ? result.verdict : "НОРМА";
+  const vc = result ? verdictCfg[vcKey] : {};
 
   return (
     <div style={S.root}>
@@ -304,12 +310,12 @@ export default function App() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {EXAMPLES.map((ex, i) => (
+{EXAMPLES.map((ex, i) => (
               <button key={i} style={S.exBtn} className="exbtn" onClick={() => setText(ex.text)}>
                 <div style={S.exBtnDot} />
                 <div>
                   <div style={S.exBtnLabel}>{ex.label}</div>
-<div style={S.exBtnPreview}>{ex.text.slice(0, 60)}...</div>
+                  <div style={S.exBtnPreview}>{ex.text.slice(0, 60)}...</div>
                 </div>
               </button>
             ))}
@@ -402,12 +408,13 @@ export default function App() {
           )}
 
           {/* Key factors */}
-          {result.key_factors?.length > 0 && (
+          {result.key_factors?.
+length > 0 && (
             <div style={S.card}>
               <div style={S.cardLabel}>КЛЮЧЕВЫЕ ФАКТОРЫ</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {result.key_factors.map((f, i) => (
-<span key={i} style={{ background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#AAA", fontSize: 12, padding: "5px 10px", borderRadius: 20 }}>{f}</span>
+                  <span key={i} style={{ background: "#1A1A1A", border: "1px solid #2A2A2A", color: "#AAA", fontSize: 12, padding: "5px 10px", borderRadius: 20 }}>{f}</span>
                 ))}
               </div>
             </div>
@@ -468,10 +475,11 @@ const S = {
   logoLetter: { fontSize: 22, fontWeight: 900, color: "#F0F0F0", fontFamily: "'Cormorant Garamond', serif", letterSpacing: 3, display: "inline-block", animation: "letterIn 0.5s ease both" },
   logoDot: { fontSize: 28, color: "#F97316", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 },
   logoSub: { fontSize: 9, color: "#444", letterSpacing: 1.5, marginTop: 1 },
-  headerBadge: { background: "#F9731615", border: "1px solid #F9731640", color: "#F97316", fontSize: 10, fontWeight: 700, padding: "4px 10px", borderRadius: 6, letterSpacing: 2 },
+headerBadge: { background: "#F9731615", border: "1px solid #F9731640", color: "#F97316", fontSize: 10, fontWeight: 700, padding: "4px 10px", borderRadius: 6, letterSpacing: 2 },
   headerLine: { height: 1, background: "linear-gradient(90deg, transparent, #1E1E1E 20%, #1E1E1E 80%, transparent)", marginBottom: 0 },
   body: { flex: 1, padding: "20px 18px 40px", overflowY: "auto" },
-heroSection: { marginBottom: 24 },
+
+  heroSection: { marginBottom: 24 },
   heroTag: { fontSize: 9, color: "#F97316", letterSpacing: 3, marginBottom: 12, fontWeight: 700 },
   heroTitle: { fontSize: 34, fontWeight: 900, color: "#F0F0F0", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1.1, marginBottom: 10 },
   heroSub: { fontSize: 13, color: "#555", lineHeight: 1.6 },
@@ -509,14 +517,13 @@ heroSection: { marginBottom: 24 },
   listItem: { fontSize: 12, color: "#AAA", lineHeight: 1.55, marginBottom: 7, display: "flex", alignItems: "flex-start" },
   resetBtn: { width: "100%", marginTop: 12, background: "transparent", border: "1px solid #1E1E1E", color: "#555", padding: "14px", borderRadius: 12, cursor: "pointer", fontSize: 13, fontFamily: "'Instrument Sans', sans-serif", transition: "all 0.2s" },
 };
-
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;900&family=Instrument+Sans:wght@400;500;600;700;800&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #080808; }
 
   @keyframes fadein { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-@keyframes letterIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes letterIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
   @keyframes dotPulse { 0%,100% { opacity:.2; transform:scale(.7); } 50% { opacity:1; transform:scale(1); } }
   @keyframes orbPulse { 0%,100% { transform:scale(1); opacity:.9; } 50% { transform:scale(1.15); opacity:1; } }
 
