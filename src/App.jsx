@@ -176,7 +176,7 @@ const DeviationBar = ({ pct }) => {
 const Tile = ({ label, value, accent, sub }) => (
   <div style={{ background: "#111", border: "1px solid #1C1C1C", borderRadius: 14, padding: "14px 16px", flex: 1 }}>
     <div style={{ fontSize: 9, color: "#444", letterSpacing: 2, marginBottom: 6, textTransform: "uppercase" }}>{label}</div>
-    <div style={{ fontSize: 18, fontWeight: 900, color: accent || "#E8E8E8", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>{value || "—"}</div>
+    <div style={{ fontSize: 18, fontWeight: 900, color: accent  "#E8E8E8", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>{value  "—"}</div>
     {sub && <div style={{ fontSize: 10, color: "#444", marginTop: 4 }}>{sub}</div>}
   </div>
 );
@@ -218,7 +218,7 @@ export default function App() {
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
           system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: Проанализируй объявление:\n\n${text} }],
+          messages: [{ role: "user", content: "Проанализируй объявление:\n\n" + text }],
         }),
       });
       const data = await res.json();
@@ -350,9 +350,9 @@ export default function App() {
           {/* Tags row */}
           <div style={S.tagsRow}>
             {[
-              result.area_total && ${result.area_total.toLocaleString()} кв.м,
-              result.floor_info && Этаж: ${result.floor_info},
-              result.ceiling_height && Потолки: ${result.ceiling_height}м,
+              result.area_total && (result.area_total.toLocaleString() + " кв.м"),
+              result.floor_info && ("Этаж: " + result.floor_info),
+              result.ceiling_height && ("Потолки: " + result.ceiling_height + "м"),
               result.location_premium,
             ].filter(Boolean).map((t, i) => (
               <span key={i} style={S.tag}>{t}</span>
@@ -363,11 +363,11 @@ export default function App() {
           <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
             <Tile
               label="Цена за кв.м"
-              value={result.price_per_sqm ? $${result.price_per_sqm.toLocaleString()} : "—"}
+              value={result.price_per_sqm ? ("$" + result.price_per_sqm.toLocaleString()) : "—"}
             />
             <Tile
               label="Рынок (диапазон)"
-              value={result.market_price_per_sqm_min ? $${result.market_price_per_sqm_min.toLocaleString()}–${result.market_price_per_sqm_max?.toLocaleString()} : "—"}
+              value={result.market_price_per_sqm_min ? ("$" + result.market_price_per_sqm_min.toLocaleString() + "–" + result.market_price_per_sqm_max?.toLocaleString()) : "—"}
               accent="#C8A96E"
             />
           </div>
@@ -376,12 +376,12 @@ export default function App() {
           <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
             <Tile
               label="Цена сделки"
-              value={result.price_total ? $${result.price_total.toLocaleString()} : "—"}
+              value={result.price_total ? ("$" + result.price_total.toLocaleString()) : "—"}
             />
             {result.fair_price_estimate && (
               <Tile
                 label="Справедливая цена"
-                value={`$${result.fair_price_estimate.toLocaleString()}`}
+                value={"$" + result.fair_price_estimate.toLocaleString()}
                 accent="#C8A96E"
               />
             )}
@@ -395,9 +395,9 @@ export default function App() {
           {/* Yield row */}
           {result.monthly_rent_estimate && (
             <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <Tile label="Аренда/мес" value={`$${result.monthly_rent_estimate.toLocaleString()}`} accent="#4ADE80" />
-              <Tile label="Доходность" value={result.annual_yield_pct ? ${result.annual_yield_pct}% : "—"} accent="#4ADE80" />
-              <Tile label="Окупаемость" value={result.payback_years ? ${result.payback_years} л. : "—"} />
+              <Tile label="Аренда/мес" value={"$" + result.monthly_rent_estimate.toLocaleString()} accent="#4ADE80" />
+              <Tile label="Доходность" value={result.annual_yield_pct ? (result.annual_yield_pct + "%") : "—"} accent="#4ADE80" />
+              <Tile label="Окупаемость" value={result.payback_years ? (result.payback_years + " л.") : "—"} />
             </div>
           )}
 
@@ -533,4 +533,3 @@ const CSS = `
 
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-thumb { background: #1E1E1E; border-radius: 2px; }
-`;
