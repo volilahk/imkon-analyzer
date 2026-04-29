@@ -176,7 +176,7 @@ const DeviationBar = ({ pct }) => {
 const Tile = ({ label, value, accent, sub }) => (
   <div style={{ background: "#111", border: "1px solid #1C1C1C", borderRadius: 14, padding: "14px 16px", flex: 1 }}>
     <div style={{ fontSize: 9, color: "#444", letterSpacing: 2, marginBottom: 6, textTransform: "uppercase" }}>{label}</div>
-    <div style={{ fontSize: 18, fontWeight: 900, color: accent  "#E8E8E8", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>{value  "—"}</div>
+    <div style={{ fontSize: 18, fontWeight: 900, color: accent || "#E8E8E8", fontFamily: "'Cormorant Garamond', serif", lineHeight: 1 }}>{value || "—"}</div>
     {sub && <div style={{ fontSize: 10, color: "#444", marginTop: 4 }}>{sub}</div>}
   </div>
 );
